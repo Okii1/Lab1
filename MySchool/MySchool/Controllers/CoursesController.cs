@@ -35,8 +35,8 @@ namespace MySchool.Controllers
                                 Id = Convert.ToInt32(reader["Id"]),
                                 Name = Convert.ToString(reader["Name"]),
                                 Description = Convert.ToString(reader["Description"]),
-                                StartTime = Convert.ToDateTime(reader["StartTime"]),
-                                EndTime = Convert.ToDateTime(reader["EndTime"])
+                                StartTime = Convert.ToString(reader["StartTime"]),
+                                EndTime = Convert.ToString(reader["EndTime"])
                             };
 
                             coursesList.Add(course);
@@ -61,8 +61,8 @@ namespace MySchool.Controllers
 
                     cmd.Parameters.AddWithValue("@Name", course.Name);
                     cmd.Parameters.AddWithValue("@Description", course.Description);
-                    cmd.Parameters.AddWithValue("@StartTime", course.StartTime.ToString("HH:mm:ss"));
-                    cmd.Parameters.AddWithValue("@EndTime", course.EndTime.ToString("HH:mm:ss"));
+                    cmd.Parameters.AddWithValue("@StartTime", course.StartTime);
+                    cmd.Parameters.AddWithValue("@EndTime", course.EndTime);
                     int i = cmd.ExecuteNonQuery();
 
                     if (i > 0)
@@ -89,8 +89,8 @@ namespace MySchool.Controllers
                     cmd.Parameters.AddWithValue("@CourseId", course.Id);
                     cmd.Parameters.AddWithValue("@Name", course.Name);
                     cmd.Parameters.AddWithValue("@Description", course.Description);
-                    cmd.Parameters.AddWithValue("@StartTime", course.StartTime.ToString("HH:mm:ss"));
-                    cmd.Parameters.AddWithValue("@EndTime", course.EndTime.ToString("HH:mm:ss"));
+                    cmd.Parameters.AddWithValue("@StartTime", course.StartTime);
+                    cmd.Parameters.AddWithValue("@EndTime", course.EndTime);
 
                     int i = cmd.ExecuteNonQuery();
 

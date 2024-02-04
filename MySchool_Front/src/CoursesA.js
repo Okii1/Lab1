@@ -9,11 +9,11 @@ import Button from 'react-bootstrap/Button';
 const CoursesA = () => {
   const [showModal, setShowModal] = useState(false);
   const [newCourse, setNewCourse] = useState({
-    Id: null, 
+    
     Name: '',
     Description: '',
-    StartTime: '',  
-    EndTime: '',    
+    StartTime: '', 
+    EndTime: '', 
   });
   
 const handleInputChange = (e) => {
@@ -36,22 +36,9 @@ const handleSaveCourse = async () => {
     return;
   }
 
-  const data = {
-    Name: newCourse.Name,
-    Description: newCourse.Description,
-    StartTime: newCourse.StartTime,
-    EndTime: newCourse.EndTime
-  };
-  
 
-  //console.log(data);
-
-  const url = 'https://localhost:44361/AddCourses';
-  console.log(newCourse.Name, newCourse.Description, newCourse.StartTime, newCourse.EndTime);
-console.log("New Course Data:", newCourse);
-
-axios.post('https://localhost:44361/AddCourses', {
-  Id :newCourse.Id,
+axios.post('https://localhost:44361/api/Courses/AddCourses', {
+ 
     Name: newCourse.Name,
     Description: newCourse.Description,
     StartTime: newCourse.StartTime,
@@ -63,6 +50,8 @@ axios.post('https://localhost:44361/AddCourses', {
 })
 .then(response => {
     console.log(response.data);
+    window.location.reload();
+
 })
 .catch(error => {
     console.error('Error:', error);
@@ -104,7 +93,7 @@ axios.post('https://localhost:44361/AddCourses', {
       navigate('/');
     }
     
-    axios.get('https://localhost:44361/GetAllCourses')
+    axios.get('https://localhost:44361/api/Courses/GetAllCourses')
       .then(response => {
         setCourses(response.data);
         console.log(response.data)
@@ -113,7 +102,52 @@ axios.post('https://localhost:44361/AddCourses', {
         console.error('Error fetching courses:', error);
       });
   }, []); 
+  const handleDelete = async (courseId) => {
+    try {
+      await axios.delete(`https://localhost:44361/api/Courses/DeleteCourse/${courseId}`);
+      setCourses((prevCourses) => prevCourses.filter(course => course.id !== courseId));
+    } catch (error) {
+      console.error(`Error deleting course with ID ${courseId}:`, error);
+    }
+  };
+  const handleEdit = async (courseId) => {
+    const selectedCourse = courses.find(course => course.id === courseId);
 
+  // Set the newCourse state with the data of the selected course
+  setNewCourse({
+    id: selectedCourse.id,
+    Name: selectedCourse.Name,
+    Description: selectedCourse.Description,
+    StartTime: selectedCourse.StartTime,
+    EndTime: selectedCourse.EndTime
+  });
+  setShowModal(true);
+  axios({
+    method: "put",
+    url: `https://localhost:44361/api/Courses/UpdateCourse/${courseId}`,
+    data: {
+      id: courseId,
+    Name: selectedCourse.Name,
+    Description: selectedCourse.Description,
+    StartTime: selectedCourse.StartTime,
+    EndTime: selectedCourse.EndTime
+    },
+    config: {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    },
+  })
+    .then((response) => {
+      console.log(response);
+     
+    })
+    .catch((error) => {
+      console.log("the error has occured: " + error);
+    });
+
+  };
   return (
     
     <>
@@ -147,6 +181,7 @@ axios.post('https://localhost:44361/AddCourses', {
            <th>Description</th>
            <th>StartTime</th>
           <th>EndTime</th>
+       
           </tr>
         </thead>
         <tbody>
@@ -155,8 +190,14 @@ axios.post('https://localhost:44361/AddCourses', {
               <td>{course.id}</td>
               <td>{course.name}</td>
               <td>{course.description}</td>
-              <td>{new Date(course.startTime).toLocaleTimeString()}</td>
-             <td>{new Date(course.endTime).toLocaleTimeString()}</td>
+              <td>{course.startTime}</td>
+             <td>{course.endTime}</td>
+             <Button variant="warning"  onClick={() => handleEdit(course.id)} style={{ marginRight: "15px" }}>
+      Edit
+    </Button>
+              <Button variant="danger"  onClick={() => handleDelete(course.id)} style={{ marginLeft: "" }}>
+      Delete
+    </Button>
             </tr>
           ))}
         </tbody>
@@ -174,9 +215,9 @@ axios.post('https://localhost:44361/AddCourses', {
   <label>Description:</label><br/>
   <input type="text" name="Description" value={newCourse.Description || ''} onChange={handleInputChange} /><br/>
  <label>StartTime:</label><br/>
-  <input type="text" name="StartTime" value={newCourse.StartTime || ''} onChange={handleInputChange} /><br/>
+  <input type="time" name="StartTime" value={newCourse.StartTime || ''} onChange={handleInputChange} /><br/>
  <label>EndTime:</label><br/>
-  <input type="text" name="EndTime" value={newCourse.EndTime || ''} onChange={handleInputChange} /><br/>
+  <input type="time" name="EndTime" value={newCourse.EndTime || ''} onChange={handleInputChange} /><br/>
 
  </Modal.Body>
 
@@ -195,4 +236,3 @@ axios.post('https://localhost:44361/AddCourses', {
 };
 
 export default CoursesA;
-
