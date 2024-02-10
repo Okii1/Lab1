@@ -3,12 +3,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+
 function SignUp() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [termsChecked, setTermsChecked] = useState(false);
   const navigate = useNavigate();
+
   const handleFirstNameChange = (e) => {
     setFirstName(e.target.value);
   };
@@ -19,43 +24,59 @@ function SignUp() {
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
+    setEmailError('');
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+    setPasswordError('');
   };
 
+  const handleTermsCheck = (e) => {
+    setTermsChecked(e.target.checked);
+  };
 
   const handleSignUp = () => {
-    console.log('First Name:', firstName);
-    console.log('Last Name:', lastName);
-    console.log('Email:', email);
-    console.log('Password:', password);
+    if (!email.includes('@') || !email.includes('.')) {
+      setEmailError('Email invalid');
+      return;
+    }
 
-    const data ={
+    if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters long');
+      return;
+    }
+
+    if (!termsChecked) {
+      alert('Please agree to the Terms of Service');
+      return;
+    }
+
+    const data = {
       Firstname: firstName,
-      Lastname : lastName,
+      Lastname: lastName,
       Email: email,
-      Password:password
+      Password: password
     };
-    const url='https://localhost:44361/api/Account/Registration';
-    axios.post(url,data).then((result)=>{
-  alert(result.data)
-  navigate('/')
-    }).catch(error => {
-   
-      if (error.response) {
-     
-        console.error('Response data:', error.response.data);
-        console.error('Response status:', error.response.status);
-        console.error('Response headers:', error.response.headers);
-      } else if (error.request) {
-        console.error('No response received:', error.request);
-      } else {
-        console.error('Error:', error.message);
-      }
-    });
-  }
+
+    const url = 'https://localhost:44361/api/Account/Registration';
+    axios.post(url, data)
+      .then((result) => {
+        alert(`User ${firstName} added`);
+        navigate('/');
+      })
+      .catch(error => {
+        if (error.response) {
+          console.error('Response data:', error.response.data);
+          console.error('Response status:', error.response.status);
+          console.error('Response headers:', error.response.headers);
+        } else if (error.request) {
+          console.error('No response received:', error.request);
+        } else {
+          console.error('Error:', error.message);
+        }
+      });
+  };
 
   return (
     <div className="container vh-100" style={{ backgroundColor: '#ffff' }}>
@@ -100,10 +121,11 @@ function SignUp() {
                         <input
                           type="email"
                           id="email"
-                          className="form-control"
+                          className={`form-control ${emailError && 'is-invalid'}`}
                           value={email}
                           onChange={handleEmailChange}
                         />
+                        {emailError && <div className="invalid-feedback">{emailError}</div>}
                       </div>
                     </div>
                     <div className="d-flex flex-row align-items-center mb-4">
@@ -113,17 +135,23 @@ function SignUp() {
                         <input
                           type="password"
                           id="password"
-                          className="form-control"
+                          className={`form-control ${passwordError && 'is-invalid'}`}
                           value={password}
                           onChange={handlePasswordChange}
                         />
+                        {passwordError && <div className="invalid-feedback">{passwordError}</div>}
                       </div>
                     </div>
-                   
                     <div className="form-check d-flex justify-content-center mb-4">
-                      <input className="" type="checkbox" value="" id="termsCheck" />
+                      <input
+                        className=""
+                        type="checkbox"
+                        value={termsChecked}
+                        id="termsCheck"
+                        onChange={handleTermsCheck}
+                      />
                       <label className="form-check-label" htmlFor="termsCheck">
-                       &nbsp;I agree to all statements in <a href="/TermsOfService">Terms of service</a>
+                        &nbsp;I agree to all statements in <a href="/TermsOfService">Terms of service</a>
                       </label>
                     </div>
                     <div className="form-check d-flex justify-content-center mb-4">
