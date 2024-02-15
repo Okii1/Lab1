@@ -9,7 +9,7 @@ import Button from 'react-bootstrap/Button';
 const CoursesA = () => {
   const [showModal, setShowModal] = useState(false);
   const [newCourse, setNewCourse] = useState({
-    
+    Id:0,
     Name: '',
     Description: '',
     StartTime: '', 
@@ -27,46 +27,46 @@ const handleInputChange = (e) => {
 const handleModal = () => {
   setShowModal(!showModal);
 };
-
-
 const handleSaveCourse = async () => {
-  
-  if (!newCourse.Name ) {
+  console.log("ID: "+newCourse.Id);
+  if (!newCourse.Name) {
     alert("Please fill in all required fields.");
     return;
   }
+  try {
+    if (newCourse.Id==0) {
+      const response = await axios.post('https://localhost:44361/api/Courses/AddCourses', {
+        Name: newCourse.Name,
+        Description: newCourse.Description,
+        StartTime: newCourse.StartTime,
+        EndTime: newCourse.EndTime
+      });
+      console.log('New course added:', response.data);
+      window.location.reload();
 
 
-axios.post('https://localhost:44361/api/Courses/AddCourses', {
- 
-    Name: newCourse.Name,
-    Description: newCourse.Description,
-    StartTime: newCourse.StartTime,
-    EndTime: newCourse.EndTime
-}, {
-    headers: {
-        'Content-Type': 'application/json', 
-    },
-})
-.then(response => {
-    console.log(response.data);
-    window.location.reload();
+    } else {
+      await axios.put(`https://localhost:44361/api/Courses/UpdateCourse`, {
+        Id: newCourse.Id,
+        Name: newCourse.Name,
+        Description: newCourse.Description,
+        StartTime: newCourse.StartTime,
+        EndTime: newCourse.EndTime
+      });
+      console.log('Course updated:', newCourse.id);
+      window.location.reload();
 
-})
-.catch(error => {
-    console.error('Error:', error);
-});
-
-  setShowModal(false);
+    }
+    
+    setShowModal(false);
+  } catch (error) {
+    console.error('Error saving course:', error);
+  }
 };
-
   const userRoleId = localStorage.getItem('userRoleId');
   const navigate = useNavigate();
-
   const [courses, setCourses] = useState([]);
   const handleLogout = async () => {
-
-
     const url = 'https://localhost:44361/api/Account/Logout';
     try {
     const response = await fetch(url, {
@@ -92,7 +92,6 @@ axios.post('https://localhost:44361/api/Courses/AddCourses', {
     if (userRoleId == 0 || userRoleId == 2) {
       navigate('/');
     }
-    
     axios.get('https://localhost:44361/api/Courses/GetAllCourses')
       .then(response => {
         setCourses(response.data);
@@ -112,44 +111,17 @@ axios.post('https://localhost:44361/api/Courses/AddCourses', {
   };
   const handleEdit = async (courseId) => {
     const selectedCourse = courses.find(course => course.id === courseId);
-
-  // Set the newCourse state with the data of the selected course
-  setNewCourse({
-    id: selectedCourse.id,
-    Name: selectedCourse.Name,
-    Description: selectedCourse.Description,
-    StartTime: selectedCourse.StartTime,
-    EndTime: selectedCourse.EndTime
-  });
-  setShowModal(true);
-  axios({
-    method: "put",
-    url: `https://localhost:44361/api/Courses/UpdateCourse/${courseId}`,
-    data: {
-      id: courseId,
-    Name: selectedCourse.Name,
-    Description: selectedCourse.Description,
-    StartTime: selectedCourse.StartTime,
-    EndTime: selectedCourse.EndTime
-    },
-    config: {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    },
-  })
-    .then((response) => {
-      console.log(response);
-     
-    })
-    .catch((error) => {
-      console.log("the error has occured: " + error);
+    console.log("selectedCourse:", selectedCourse);
+    setNewCourse({
+      Id: selectedCourse.id,
+      Name: selectedCourse.name,
+      Description: selectedCourse.description,
+      StartTime: selectedCourse.startTime,
+      EndTime: selectedCourse.endTime
     });
-
+  setShowModal(true);
   };
   return (
-    
     <>
        <nav className="navbar navbar-expand-lg navbar-dark bg-dark ftco_navbar ftco-navbar-light" id="ftco-navbar">
 	    <div className="container d-flex align-items-center">
@@ -160,11 +132,11 @@ axios.post('https://localhost:44361/api/Courses/AddCourses', {
 	      <div className="collapse navbar-collapse" id="ftco-nav">
 	        <ul className="navbar-nav ml-auto">
 	        	<li className="nav-item "><a href="/Home" className="nav-link pl-0">Home</a></li>
-				<li className="nav-item active"><a href="/CoursesA" className="nav-link">Courses</a></li>
+			    	<li className="nav-item active"><a href="/CoursesA" className="nav-link">Courses</a></li>
 	        	<li className="nav-item"><a href="/TeachersA" className="nav-link">Teachers</a></li>
 	        	<li className="nav-item"><a href="/Pricing" className="nav-link">Pricing</a></li>
-	            <li className="nav-item"><a href="/Contact" className="nav-link">Contact</a></li>
-				<li className="nav-item"><a href="#" className="nav-link" onClick={handleLogout}>Logout</a></li>
+	          <li className="nav-item"><a href="/Contact" className="nav-link">Contact</a></li>
+			    	<li className="nav-item"><a href="#" className="nav-link" onClick={handleLogout}>Logout</a></li>
 	        </ul>
 	      </div>
 	    </div>
@@ -176,12 +148,11 @@ axios.post('https://localhost:44361/api/Courses/AddCourses', {
     <table className="table" style={{ margin: "40px" }}>
         <thead>
           <tr>
-           <th>ID</th>
+           <th>Id</th>
            <th>Name</th>
            <th>Description</th>
            <th>StartTime</th>
-          <th>EndTime</th>
-       
+           <th>EndTime</th>
           </tr>
         </thead>
         <tbody>
@@ -193,34 +164,31 @@ axios.post('https://localhost:44361/api/Courses/AddCourses', {
               <td>{course.startTime}</td>
              <td>{course.endTime}</td>
              <Button variant="warning"  onClick={() => handleEdit(course.id)} style={{ marginRight: "15px" }}>
-      Edit
-    </Button>
+               Edit
+             </Button>
               <Button variant="danger"  onClick={() => handleDelete(course.id)} style={{ marginLeft: "" }}>
-      Delete
-    </Button>
+              Delete
+            </Button>
             </tr>
           ))}
         </tbody>
       </table>
-      
      <Footer /> 
      <Modal show={showModal} onHide={handleModal}>
       <Modal.Header closeButton>
         <Modal.Title>Add Course</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+  <input type="text" name="Id" value={newCourse.Id} onChange={handleInputChange} hidden/>
   <label>Name:</label><br/>
-  <input type="text" name="Name" value={newCourse.Name || ''} onChange={handleInputChange} /><br/>
-
+  <input type="text" name="Name" value={newCourse.Name} onChange={handleInputChange}/><br/>
   <label>Description:</label><br/>
-  <input type="text" name="Description" value={newCourse.Description || ''} onChange={handleInputChange} /><br/>
- <label>StartTime:</label><br/>
-  <input type="time" name="StartTime" value={newCourse.StartTime || ''} onChange={handleInputChange} /><br/>
- <label>EndTime:</label><br/>
-  <input type="time" name="EndTime" value={newCourse.EndTime || ''} onChange={handleInputChange} /><br/>
-
+  <input type="text" name="Description" value={newCourse.Description} onChange={handleInputChange}/><br/>
+  <label>StartTime:</label><br/>
+  <input type="time" name="StartTime" value={newCourse.StartTime} onChange={handleInputChange}/><br/>
+  <label>EndTime:</label><br/>
+  <input type="time" name="EndTime" value={newCourse.EndTime} onChange={handleInputChange}/><br/>
  </Modal.Body>
-
       <Modal.Footer>
         <Button variant="secondary" onClick={handleModal}>
           Close
@@ -231,8 +199,8 @@ axios.post('https://localhost:44361/api/Courses/AddCourses', {
       </Modal.Footer>
     </Modal>
   </>
-     
   );
 };
 
 export default CoursesA;
+

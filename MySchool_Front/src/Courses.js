@@ -56,7 +56,7 @@ const Courses = () => {
       navigate('/');
     }
     
-    axios.get('https://localhost:44361/GetAllCourses')
+    axios.get('https://localhost:44361/api/Courses/GetAllCourses')
       .then(response => {
         setCourses(response.data);
       })
@@ -106,7 +106,7 @@ const Courses = () => {
         <div className="img" style={{ backgroundImage: `url(${courseImages[index]})` }}></div>
           <div className="text bg-light p-4">
             <h3><a href="#">{course.name}</a></h3>
-            <p className="subheading"><span>Class time:</span> {new Date(course.startTime).toLocaleTimeString()} - {new Date(course.endTime).toLocaleTimeString()}</p>
+            <p className="subheading"><span>Class time:</span> {course.startTime} - {course.endTime}</p>
             <p>{course.description}</p>
           </div>
         </div>
