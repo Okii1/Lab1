@@ -4,6 +4,8 @@ using System.Data.SqlClient;
 
 namespace MySchool.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class TeachersController : Controller
     {
         private readonly IConfiguration _configuration;
@@ -85,7 +87,7 @@ namespace MySchool.Controllers
                     cmd.Parameters.AddWithValue("@Name", teachers.Name);
                     cmd.Parameters.AddWithValue("@Surname", teachers.Surname);
                     cmd.Parameters.AddWithValue("@Description", teachers.Description);
-                    cmd.Parameters.AddWithValue("@CourseId",teachers.CourseId);
+                    cmd.Parameters.AddWithValue("@CourseId", teachers.CourseId);
 
                     int i = cmd.ExecuteNonQuery();
 
@@ -126,6 +128,6 @@ namespace MySchool.Controllers
             }
         }
 
-    
-}
+
+    }
 }
