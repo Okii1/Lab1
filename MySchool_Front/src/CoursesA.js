@@ -25,6 +25,13 @@ const handleInputChange = (e) => {
   }));
 };
 const handleModal = () => {
+  setNewCourse({
+    Id:0,
+    Name: '',
+    Description: '',
+    StartTime: '', 
+    EndTime: '', 
+  });
   setShowModal(!showModal);
 };
 const handleSaveCourse = async () => {
@@ -176,7 +183,7 @@ const handleSaveCourse = async () => {
      <Footer /> 
      <Modal show={showModal} onHide={handleModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Add Course</Modal.Title>
+      <Modal.Title>{newCourse.Id ? 'Edit Course' : 'Add Course'}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
   <input type="text" name="Id" value={newCourse.Id} onChange={handleInputChange} hidden/>

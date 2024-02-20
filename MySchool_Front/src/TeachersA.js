@@ -8,15 +8,39 @@ import Button from 'react-bootstrap/Button';
 
 const TeachersA = () => {
   const [showModal, setShowModal] = useState(false);
+  const [courses, setCourses] = useState([]);
+  const [selectedCourseId, setSelectedCourseId] = useState('');
   const [newTeacher, setNewTeacher] = useState({
     Id:0,
     Name: '',
     Surname:'',
     Description: '',
-    CourseId: 0,
+    CourseId: 0  
   });
-  
-const handleInputChange = (e) => {
+
+    useEffect(() => {
+      fetchCourses();
+    }, []);
+
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch('https://localhost:44361/api/Courses/GetAllCourses');
+        const data = await response.json();
+        setCourses(data); 
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    const handleSelectChange = (event) => {
+      setSelectedCourseId(event.target.value);
+      setNewTeacher({
+        ...newTeacher,
+        CourseId: event.target.value
+      });
+    };
+
+  const handleInputChange = (e) => {
   const { name, value } = e.target;
   setNewTeacher((prevTeacher) => ({
     ...prevTeacher,
@@ -25,8 +49,19 @@ const handleInputChange = (e) => {
   }));
 };
 const handleModal = () => {
+  setNewTeacher({
+    Id: 0,
+    Name: '',
+    Surname: '',
+    Description: '',
+    CourseId: 0
+  });
+
+  setSelectedCourseId('');
   setShowModal(!showModal);
+  
 };
+
 const handleSaveTeacher = async () => {
   console.log("ID: "+newTeacher.Id);
   if (!newTeacher.Name) {
@@ -39,7 +74,7 @@ const handleSaveTeacher = async () => {
         Name: newTeacher.Name,
         Surname: newTeacher.Surname,
         Description: newTeacher.Description,
-        CourseId: newTeacher.CourseId
+        CourseId:selectedCourseId,
         
       });
       console.log('New Teacher added:', response.data);
@@ -52,7 +87,7 @@ const handleSaveTeacher = async () => {
         Name: newTeacher.Name,
         Surname: newTeacher.Surname,
         Description: newTeacher.Description,
-        CourseId: newTeacher.CourseId
+        CourseId: selectedCourseId
      
       });
       console.log('Teacher updated:', newTeacher.id);
@@ -113,6 +148,7 @@ const handleSaveTeacher = async () => {
   };
   const handleEdit = async (TeacherId) => {
     const selectedTeacher = Teachers.find(Teacher => Teacher.id === TeacherId);
+    
     console.log("selectedTeacher:", selectedTeacher);
     setNewTeacher({
       Id: selectedTeacher.id,
@@ -122,28 +158,29 @@ const handleSaveTeacher = async () => {
       CourseId: selectedTeacher.courseId
     
     });
+    setSelectedCourseId(selectedTeacher.courseId); 
   setShowModal(true);
   };
   return (
     <>
        <nav className="navbar navbar-expand-lg navbar-dark bg-dark ftco_navbar ftco-navbar-light" id="ftco-navbar">
-      <div className="container d-flex align-items-center">
-        <a className="navbar-brand" href="/Home">MySchool</a>
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="oi oi-menu"></span> Menu
-        </button>
-        <div className="collapse navbar-collapse" id="ftco-nav">
-          <ul className="navbar-nav ml-auto">
-            <li className="nav-item "><a href="/Home" className="nav-link pl-0">Home</a></li>
-            <li className="nav-item "><a href="/CoursesA" className="nav-link">Courses</a></li>
-            <li className="nav-item active"><a href="/TeachersA" className="nav-link">Teachers</a></li>
-            <li className="nav-item"><a href="/Pricing" className="nav-link">Pricing</a></li>
-            <li className="nav-item"><a href="/Contact" className="nav-link">Contact</a></li>
-            <li className="nav-item"><a href="#" className="nav-link" onClick={handleLogout}>Logout</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+	    <div className="container d-flex align-items-center">
+	    	<a className="navbar-brand" href="/Home">MySchool</a>
+				<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+	        <span className="oi oi-menu"></span> Menu
+	      </button>
+	      <div className="collapse navbar-collapse" id="ftco-nav">
+	        <ul className="navbar-nav ml-auto">
+	        	<li className="nav-item "><a href="/Home" className="nav-link pl-0">Home</a></li>
+			    	<li className="nav-item "><a href="/CoursesA" className="nav-link">Courses</a></li>
+	        	<li className="nav-item active"><a href="/TeachersA" className="nav-link">Teachers</a></li>
+	        	<li className="nav-item"><a href="/Pricing" className="nav-link">Pricing</a></li>
+	          <li className="nav-item"><a href="/Contact" className="nav-link">Contact</a></li>
+			    	<li className="nav-item"><a href="#" className="nav-link" onClick={handleLogout}>Logout</a></li>
+	        </ul>
+	      </div>
+	    </div>
+	  </nav>
     <h4 style={{ margin: "40px" }}>All Teachers</h4>
     <Button variant="primary" onClick={handleModal}style={{ marginLeft: "40px" }}>
       Add Teacher
@@ -165,7 +202,11 @@ const handleSaveTeacher = async () => {
               <td>{Teacher.name}</td>
               <td>{Teacher.surname}</td>
               <td>{Teacher.description}</td>
-              <td>{Teacher.courseId}</td>
+              {courses.map(course => {
+              if (course.id === Teacher.courseId) {
+                return <td key={course.id}>{course.name}</td>;
+              } 
+              })}
              <Button variant="warning"  onClick={() => handleEdit(Teacher.id)} style={{ marginRight: "15px" }}>
                Edit
              </Button>
@@ -179,7 +220,7 @@ const handleSaveTeacher = async () => {
      <Footer /> 
      <Modal show={showModal} onHide={handleModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Add Teacher</Modal.Title>
+      <Modal.Title>{newTeacher.Id ? 'Edit Teacher' : 'Add Teacher'}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
   <input type="text" name="Id" value={newTeacher.Id} onChange={handleInputChange} hidden/>
@@ -190,7 +231,13 @@ const handleSaveTeacher = async () => {
   <label>Description:</label><br/>
   <input type="text" name="Description" value={newTeacher.Description} onChange={handleInputChange}/><br/>
   <label>Course:</label><br/>
-  <input type="text" name="Course" value={newTeacher.CourseId} onChange={handleInputChange}/><br/>
+      <select name="Course" value={selectedCourseId} onChange={handleSelectChange}>
+        <option value="">Select a Course</option>
+        {courses.map(course => (
+          <option key={course.id} value={course.id}>{course.name}</option>
+        ))}
+      </select><br/>
+   
  </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleModal}>
@@ -206,3 +253,4 @@ const handleSaveTeacher = async () => {
 };
 
 export default TeachersA;
+
