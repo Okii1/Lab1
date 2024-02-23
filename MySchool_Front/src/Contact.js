@@ -80,25 +80,25 @@ const Contact = () => {
           <div class="col-md-3">
           	<div class="bg-light align-self-stretch box p-4 text-center">
           		<h3 class="mb-4">Address</h3>
-	            <p>	203 Fake St. Mountain View, San Francisco, California, USA</p>
+	            <p>	28 Nentori, Pristina</p>
 	          </div>
           </div>
           <div class="col-md-3 ">
           	<div class="bg-light align-self-stretch box p-4 text-center">
           		<h3 class="mb-4">Contact Number</h3>
-	            <p><a href="tel://1234567920">	+2 392 3929 210</a></p>
+	            <p><a href="tel://1234567920">+383 43 905 854</a></p>
 	          </div>
           </div>
           <div class="col-md-3">
           	<div class="bg-light align-self-stretch box p-4 text-center">
           		<h3 class="mb-4">Website</h3>
-	            <p><a href="#">yoursite.com</a></p>
+	            <p><a href="#">MySchool.com</a></p>
 	          </div>
           </div>
           <div class="col-md-3 ">
           	<div class="bg-light align-self-stretch box p-4 text-center">
           		<h3 class="mb-4">Email Address</h3>
-	            <p><a href="mailto:info@yoursite.com">info@yoursite.com</a></p>
+	            <p><a href="mailto:info@yoursite.com">info@myschool.com</a></p>
 	          </div>
           </div>
         
@@ -138,25 +138,25 @@ const Contact = () => {
           <div class="col-md-3">
           	<div class="bg-light align-self-stretch box p-4 text-center">
           		<h3 class="mb-4">Address</h3>
-	            <p>	203 Fake St. Mountain View, San Francisco, California, USA</p>
+	            <p>28 Nentori, Pristina</p>
 	          </div>
           </div>
           <div class="col-md-3 ">
           	<div class="bg-light align-self-stretch box p-4 text-center">
           		<h3 class="mb-4">Contact Number</h3>
-	            <p><a href="tel://1234567920">	+2 392 3929 210</a></p>
+	            <p><a href="tel://1234567920">+383 43 905 854</a></p>
 	          </div>
           </div>
           <div class="col-md-3">
           	<div class="bg-light align-self-stretch box p-4 text-center">
           		<h3 class="mb-4">Website</h3>
-	            <p><a href="#">yoursite.com</a></p>
+	            <p><a href="#">myschool.com</a></p>
 	          </div>
           </div>
           <div class="col-md-3 ">
           	<div class="bg-light align-self-stretch box p-4 text-center">
           		<h3 class="mb-4">Email Address</h3>
-	            <p><a href="mailto:info@yoursite.com">info@yoursite.com</a></p>
+	            <p><a href="mailto:info@yoursite.com">info@myschool.com</a></p>
 	          </div>
           </div>
         

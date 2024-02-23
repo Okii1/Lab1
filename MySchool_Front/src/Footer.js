@@ -50,7 +50,7 @@ const Footer = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="Teacher">
+                  <a href="Teachers">
                     <span className="ion-ios-arrow-round-forward mr-2"></span>Teachers
                   </a>
                 </li>
