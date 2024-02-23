@@ -14,12 +14,12 @@ const Footer = () => {
                 <ul>
                   <li>
                     <span className="icon icon-map-marker"></span>
-                    <span className="text">203 Fake St. Mountain View, San Francisco, California, USA</span>
+                    <span className="text">28 Nentori, Pristina</span>
                   </li>
                   <li>
                     <a href="#">
                       <span className="icon icon-phone"></span>
-                      <span className="text">+2 392 3929 210</span>
+                      <span className="text">+383 43 905 854</span>
                     </a>
                   </li>
                   <li>
@@ -40,27 +40,27 @@ const Footer = () => {
               <h2 className="ftco-heading-2">Links</h2>
               <ul className="list-unstyled">
                 <li>
-                  <a href="#">
+                  <a href="Home">
                     <span className="ion-ios-arrow-round-forward mr-2"></span>Home
                   </a>
                 </li>
                 <li>
-                  <a href="#">
+                  <a href="Courses">
                     <span className="ion-ios-arrow-round-forward mr-2"></span>Courses
                   </a>
                 </li>
                 <li>
-                  <a href="#">
+                  <a href="Teacher">
                     <span className="ion-ios-arrow-round-forward mr-2"></span>Teachers
                   </a>
                 </li>
                 <li>
-                  <a href="#">
+                  <a href="Pricing">
                     <span className="ion-ios-arrow-round-forward mr-2"></span>Pricing
                   </a>
                 </li>
                 <li>
-                  <a href="#">
+                  <a href="Contact">
                     <span className="ion-ios-arrow-round-forward mr-2"></span>Contact
                   </a>
                 </li>
